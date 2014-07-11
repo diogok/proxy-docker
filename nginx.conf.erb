@@ -19,7 +19,7 @@ http {
         listen 80;
 
         # Proxying the connections connections
-        <% for @app in @data.values %>
+        <% for @app in @data.values.select {|v| v.has_key?( "name" ) && v.has_key?( "host" ) && v.has_key?( "port" ) } %>
         location /<%= @app['name'] %> {
             proxy_pass         http://<%= @app['host'] %>:<%= @app['port'] %>;
             proxy_redirect     off;
