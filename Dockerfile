@@ -10,6 +10,7 @@ RUN echo 'daemon off ;' >> /etc/nginx/nginx.conf
 
 ADD nginx.conf.erb /root/nginx.conf.erb
 ADD supervisord.conf /etc/supervisor/conf.d/proxy.conf
+ADD fix-url.rb /root/fix-url.rb
 
 EXPOSE 80
 
