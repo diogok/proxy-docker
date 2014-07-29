@@ -14,13 +14,13 @@ Assuming you are runing at server 192.168.50.25, whenever you see that as HOST.
 
 Start with etcd:
 
-    docker run -d -p 4001:4001 -t coreos/etcd
+    docker run -d -P -t coreos/etcd
 
 Them run a few webapps, and the proxy:
 
     docker run -d -P --name elasticsearch -t dockerfile/elasticsearch
     docker run -d -P --name blog -t tutum/wordpress
-    docker run -d -p 80:80 -e HOST=192.168.50.25 --name proxy -t diogok/proxy-docker
+    docker run -d -p 80:80 ---link etcd:etcd --name proxy -t diogok/proxy-docker
 
 Them register them (with small-ops):
 
