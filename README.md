@@ -14,20 +14,21 @@ Assuming you are runing at server 192.168.50.25, whenever you see that as HOST.
 
 Start with etcd:
 
-    docker run -d -P -t coreos/etcd
+    $ docker run -d -P -t coreos/etcd
 
 Them run a few webapps, and the proxy:
 
-    docker run -d -P --name elasticsearch -t dockerfile/elasticsearch
-    docker run -d -P --name blog -t tutum/wordpress
-    docker run -d -p 80:80 ---link etcd:etcd --name proxy -t diogok/proxy-docker
+    $ docker run -d -P --name elasticsearch -t dockerfile/elasticsearch
+    $ docker run -d -P --name blog -t tutum/wordpress
+    $ docker run -d -p 80:80 ---link etcd:etcd -e ROOT_APP=blog --name proxy -t diogok/proxy-docker
 
 Them register them (with small-ops):
 
-    docker2etcd
+    $ docker2etcd
 
 And this proxy will be set:
 
+    http://192.168.50.25/
     http://192.168.50.25/elasticsearch
     http://192.168.50.25/blog
     http://192.168.50.25/proxy 
@@ -36,7 +37,6 @@ At any change you just need to register again so the proxy updates.
 
 ## TODO
 
-- define root app
 - subdomains
 
 ## License 
