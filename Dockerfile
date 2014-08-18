@@ -3,7 +3,7 @@ FROM ubuntu:14.04
 RUN apt-get install nginx supervisor wget curl ruby -y
 
 RUN gem sources -r http://rubygems.org/ && gem sources -a https://rubygems.org/
-RUN gem install small-ops -v 0.0.22
+RUN gem install small-ops -v 0.0.28
 
 RUN mkdir /var/log/supervisord 
 RUN echo 'daemon off ;' >> /etc/nginx/nginx.conf
