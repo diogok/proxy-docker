@@ -12,6 +12,7 @@ ADD nginx.conf.erb /root/nginx.conf.erb
 ADD supervisord.conf /etc/supervisor/conf.d/proxy.conf
 
 EXPOSE 80
+EXPOSE 9001
 
 CMD [ "supervisord" ]
 
