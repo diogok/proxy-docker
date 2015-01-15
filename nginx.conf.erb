@@ -24,7 +24,7 @@ http {
 
         <% if ENV['ROOT_APP'] then %>
         location / {
-            return 301 /<%= ENV['ROOT_APP'] %> ;
+            return 307 /<%= ENV['ROOT_APP'] %> ;
         }
         <% end %>
 
