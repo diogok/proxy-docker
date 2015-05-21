@@ -29,10 +29,10 @@ http {
         <% end %>
 
         # Proxying the connections connections
-        <% for @app in @data.values.select {|v| v.has_key?( "name" ) && v.has_key?( "host" ) && v.has_key?( "port" ) } %>
-        location /<%= @app['name'] %>/ {
-            rewrite /<%= @app['name'] %>/(.*) /$1 break;
-            proxy_pass         http://<%= @app['networksettings']['ipaddress'] %>:<%= @app['networksettings']['ports'].select {|k,v| v.is_a?(Hash)  }.keys.sort.first.gsub("_tcp","").gsub("/tcp","") %>;
+        <% for name,url in @data %>
+        location /<%= name %>/ {
+            rewrite /<%= name %>/(.*) /$1 break;
+            proxy_pass         http://<%= url %>;
             proxy_redirect     default;
             proxy_set_header   Host $host;
             proxy_set_header   X-Real-IP $remote_addr;
