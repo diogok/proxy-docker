@@ -40,7 +40,6 @@ while true do
           if v.has_key?("ServiceAddress") && !v["ServicePort"].nil? && !v["ServicePort"].to_s.empty?
             if v.has_key?("ServicePort") && !v["ServicePort"].nil? && !v["ServicePort"].to_s.empty?
               data[name] = "#{ v["ServiceAddress"] }:#{v["ServicePort"]}"
-              puts "#{name} = #{data[name]}"
             end
           end
         end
@@ -55,6 +54,7 @@ while true do
 
   if actual != last then
     puts "Writing /etc/nginx/nginx.conf"
+    puts result
     File.open('/etc/nginx/nginx.conf', 'w') { |file| file.write(result) }
     `/usr/sbin/nginx -s reload`
     last = actual
