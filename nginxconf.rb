@@ -32,7 +32,7 @@ while true do
 
   http_get("#{consul}/v1/catalog/services").each{|k,v|
     http_get("#{consul}/v1/catalog/service/#{k}").each{|v|
-      id = /:([a-zA-Z-_]+):([0-9]+)$/.match(v["ServiceID"])
+      id = /:([a-zA-Z0-9-_]+):([0-9]+)$/.match(v["ServiceID"])
       if id 
         name = id[1]
         port = id[2]
