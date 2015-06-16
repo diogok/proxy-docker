@@ -2,15 +2,8 @@
 
 require 'uri'
 require 'json'
-require 'net/http'
 require 'erb'
 require 'zlib'
-
-consul = "http://#{ENV["CONSUL_PORT_8500_TCP_ADDR"]}:8500"
-
-def http_get(uri)
-    JSON.parse(Net::HTTP.get(URI(uri)))
-end
 
 class Namespace
   def initialize(data,config)
@@ -30,22 +23,30 @@ while true do
 
   data={}
 
-  http_get("#{consul}/v1/catalog/services").each{|k,v|
-    http_get("#{consul}/v1/catalog/service/#{k}").each{|v|
-      id = /:([a-zA-Z0-9-_]+):([0-9]+)$/.match(v["ServiceID"])
-      if id 
-        name = id[1]
-        port = id[2]
-        if !data.has_key? name
-          if v.has_key?("ServiceAddress") && !v["ServicePort"].nil? && !v["ServicePort"].to_s.empty?
-            if v.has_key?("ServicePort") && !v["ServicePort"].nil? && !v["ServicePort"].to_s.empty?
-              data[name] = "#{ v["ServiceAddress"] }:#{v["ServicePort"]}"
+  `docker ps | awk '{ print $1 }'`.split("\n")[1..-1].each {|cid|
+    begin
+      containers = JSON.parse `docker inspect #{cid}`
+      container = containers[0]
+      name = container["Name"][1..-1]
+      ip   = container["NetworkSettings"]["IPAddress"]
+      ports =  container["NetworkSettings"]["Ports"]
+      ports.each {|k,v|
+        if !v.nil? then
+          if !data.has_key?(name) then
+            if !v[0]["HostPort"].empty? then
+              port = k.split("/").first 
+              data[name] = "#{ip}:#{port}"
             end
           end
         end
-      end
-    }
+      }
+    rescue Exception => e
+      puts e
+    end
   }
+
+  puts data
+  puts data.values.count
 
   ns = Namespace.new(data,{})
   result=ERB.new(template).result(ns.get_binding)
