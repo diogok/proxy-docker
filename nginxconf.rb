@@ -29,24 +29,26 @@ while true do
       container = containers[0]
       name = container["Name"][1..-1]
       ip   = container["NetworkSettings"]["IPAddress"]
-      ports =  container["NetworkSettings"]["Ports"]
-      ports.each {|k,v|
-        if !v.nil? then
-          if !data.has_key?(name) then
-            if !v[0]["HostPort"].empty? then
-              port = k.split("/").first 
-              data[name] = "#{ip}:#{port}"
+      if ip == "" then
+        ip = `cat /etc/hosts | grep #{name} | awk '{print $1}' | head -n 1`.gsub("\n","")
+      end
+      if ip != "" then
+        ports =  container["NetworkSettings"]["Ports"]
+        ports.each {|k,v|
+          if !v.nil? then
+            if !data.has_key?(name) then
+              if !v[0]["HostPort"].empty? then
+                port = k.split("/").first 
+                data[name] = "#{ip}:#{port}"
+              end
             end
           end
-        end
-      }
+        }
+      end
     rescue Exception => e
       puts e
     end
   }
-
-  puts data
-  puts data.values.count
 
   ns = Namespace.new(data,{})
   result=ERB.new(template).result(ns.get_binding)
