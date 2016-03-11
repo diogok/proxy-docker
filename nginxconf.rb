@@ -30,7 +30,7 @@ while true do
       name = container["Name"][1..-1]
       ip   = container["NetworkSettings"]["IPAddress"]
       if ip == "" then
-        ip = `cat /etc/hosts | grep '\\s#{name}$' | awk '{print $1}' | head -n 1`.gsub("\n","")
+        ip = `getent hosts #{name} | awk '{print $1}' | head -n 1`.gsub("\n","")
       end
       if ip != "" then
         ports =  container["NetworkSettings"]["Ports"]
