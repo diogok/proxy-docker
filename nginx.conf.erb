@@ -19,10 +19,14 @@ http {
     keepalive_requests 0;
     keepalive_timeout 0;
 
+    client_max_body_size 2048m;
+
     # Configuration for the server
     server {
         # Running port
         listen 80;
+
+        client_max_body_size 2048m;
 
         <% if ENV['ROOT_APP'] then %>
         location / {
